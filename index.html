@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>时钟</title>
+</head>
+<body>
+    <canvas width="500" height="500" id="canvas">
+        您的浏览器当前版本不支持canvas
+    </canvas>
+</body>
+</html>
+<script type="text/javascript">
+    // 获得画布
+    var  canvas = document.querySelector("#canvas");
+    // 上下文
+    var ctx = canvas.getContext("2d");
+    //开始描绘
+    function drawClock(){
+        ctx.clearRect(0,0,500,500)
+        //表盘
+        //获取时间
+        var now = new Date();
+        var sec = now.getSeconds();  //获取秒
+        var minute = now.getMinutes();  //获取分钟
+        var hour = now.getHours();   //获取小时
+        //小时必须获取浮点类型，产生偏移（小时+分钟比）
+        hour = hour + minute / 60;
+        //将24小时转换为12小时
+        hour = hour > 12 ? hour - 12 : hour;
+        ctx.beginPath();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "black";
+        ctx.arc(250,250,200,0,Math.PI*2,false);
+        ctx.stroke();
+        ctx.closePath();
+        // 小时的刻度盘
+        for(var i = 0 ; i < 12 ; i++){
+            ctx.save();//设置旋转环境
+            ctx.lineWidth = 7;
+            ctx.strokeStyle = "black";
+            ctx.translate(250,250);//空间位移
+            ctx.rotate(Math.PI/180*30*i);//旋转角度
+            ctx.beginPath();//开始绘画
+            ctx.moveTo(0,-170);//划线从0,-170开始
+            ctx.lineTo(0,-190);//到这
+            ctx.stroke();//划线
+            ctx.closePath();//自动补齐
+            ctx.restore();//复位
+        }
+        // 分钟的刻度盘
+        for(var i = 0 ; i < 60 ; i++){
+            ctx.save();//设置旋转环境
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "black";
+            ctx.translate(250,250);//空间位移
+            ctx.rotate(Math.PI/180*6*i);//旋转角度
+            ctx.beginPath();//开始绘画
+            ctx.moveTo(0,-175);//划线从0,-170开始
+            ctx.lineTo(0,-185);//到这
+            ctx.stroke();//划线
+            ctx.closePath();//自动补齐
+            ctx.restore();//复位
+        }
+        //时针
+        ctx.save();
+        ctx.lineWidth = 7;//线宽
+        ctx.strokeStyle = "skyblue";
+        ctx.translate(250,250);
+        ctx.rotate(hour*30*Math.PI/180);  //设置旋转角度
+        ctx.beginPath();   //画笔开始
+        ctx.moveTo(0,-100);  //画线， 从坐标0，-140开始
+        ctx.lineTo(0,20);   //到坐标0，10结束
+        ctx.stroke();   //绘图
+        ctx.closePath();   //结束画布
+        ctx.restore();   //将旋转之后的元素放回原画布
+        //分针
+        ctx.save();
+        ctx.lineWidth = 5;//线宽
+        ctx.strokeStyle = "pink";
+        ctx.translate(250,250);
+        ctx.rotate(minute*6*Math.PI/180);  //设置旋转角度
+        ctx.beginPath();   //画笔开始
+        ctx.moveTo(0,-130);  //画线， 从坐标0，-140开始
+        ctx.lineTo(0,20);   //到坐标0，10结束
+        ctx.stroke();   //绘图
+        ctx.closePath();   //结束画布
+        ctx.restore();   //将旋转之后的元素放回原画布
+        //秒针
+        ctx.save();
+        ctx.lineWidth = 3;//线宽
+        ctx.strokeStyle = "red";
+        ctx.translate(250,250);
+        ctx.rotate(sec*6*Math.PI/180-5);  //设置旋转角度
+        ctx.beginPath();   //画笔开始
+        ctx.moveTo(10,-160);  //画线， 从坐标0，-140开始
+        ctx.lineTo(0,00);   //到坐标0，10结束
+        ctx.stroke();   //绘图
+        ctx.closePath();   //结束画布
+        ctx.restore();   //将旋转之后的元素放回原画布
+        //画出时针，分针，秒针交叉点
+        ctx.beginPath();
+        ctx.strokeStyle="#f00";
+        ctx.arc(250,250,5,0,Math.PI*2,false);
+        ctx.fillStyle="#fff";   //填充颜色
+        ctx.fill();  //填充
+        ctx.stroke();
+        ctx.closePath();
+    }
+    drawClock();
+    setInterval(drawClock,1000);
+</script>
